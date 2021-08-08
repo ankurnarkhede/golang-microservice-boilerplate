@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/vsouza/go-gin-boilerplate/controllers"
-	"github.com/vsouza/go-gin-boilerplate/middlewares"
+	"gitlab.com/awesome-life/god/controllers"
+	"gitlab.com/awesome-life/god/middlewares"
 )
 
 func NewRouter() *gin.Engine {
@@ -24,6 +24,6 @@ func NewRouter() *gin.Engine {
 			userGroup.GET("/:id", user.Retrieve)
 		}
 	}
-	return router
 
+	return router
 }

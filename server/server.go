@@ -1,9 +1,10 @@
 package server
 
-import "github.com/vsouza/go-gin-boilerplate/config"
+import "gitlab.com/awesome-life/god/config"
 
 func Init() {
 	config := config.GetConfig()
-	r := NewRouter()
-	r.Run(config.GetString("server.port"))
+	router := NewRouter()
+
+	router.Run(config.GetString("server.port"))
 }
