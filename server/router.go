@@ -1,29 +1,24 @@
 package server
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/awesome-life/god/controllers"
-	"gitlab.com/awesome-life/god/middlewares"
+	"github.com/ankurnarkhede/golang-microservice-boilerplate/config"
+	"go.uber.org/zap"
 )
 
-func NewRouter() *gin.Engine {
+func NewRouter(config config.BaseConfig, logger *zap.Logger) *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	health := new(controllers.HealthController)
+	// Add CORS config
+	// @todo: Refactor CORS to allow specific sources. Not working currently
+	router.Use(cors.Default())
 
-	router.GET("/health", health.Status)
-	router.Use(middlewares.AuthMiddleware())
+	v1Routes := router.Group("/api/v1")
 
-	v1 := router.Group("v1")
-	{
-		userGroup := v1.Group("user")
-		{
-			user := new(controllers.UserController)
-			userGroup.GET("/:id", user.Retrieve)
-		}
-	}
+	RegisterV1Routes(v1Routes, config, logger)
 
 	return router
 }

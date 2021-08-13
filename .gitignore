@@ -24,3 +24,6 @@ go-gin-boilerplate
 # IDE/editor files
 .idea/
 .vscode/
+
+# Env files
+.env

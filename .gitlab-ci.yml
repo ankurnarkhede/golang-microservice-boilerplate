@@ -1,0 +1,42 @@
+# Gitlab CI File
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml
+image: golang:latest
+
+variables:
+  # Please edit to your GitLab project
+  REPO_NAME: github.com/ankurnarkhede/golang-microservice-boilerplate
+
+# Make a symbolic link for the repo WRT GOPATH
+before_script:
+  - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+  - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+  - cd $GOPATH/src/$REPO_NAME
+
+stages:
+  - test
+  - build
+  - deploy
+
+tests:
+  stage: test
+  script:
+    - go test ./...
+
+build:
+  stage: build
+  script:
+    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
+  artifacts:
+    paths:
+      - mybinary
+
+staging:
+  stage: deploy
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_STAGING --api-key=$HEROKU_API_KEY
+  only:
+    - develop
