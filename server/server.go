@@ -1,9 +1,13 @@
 package server
 
-import "github.com/vsouza/go-gin-boilerplate/config"
+import (
+	"github.com/ankurnarkhede/golang-microservice-boilerplate/config"
+	"go.uber.org/zap"
+)
 
-func Init() {
-	config := config.GetConfig()
-	r := NewRouter()
-	r.Run(config.GetString("server.port"))
+// Init : Initialize the server.
+func Init(config config.BaseConfig, logger *zap.Logger) {
+	router := NewRouter(config, logger)
+
+	router.Run(":" + config.Port)
 }
